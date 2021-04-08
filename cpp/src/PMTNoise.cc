@@ -25,8 +25,8 @@ fNnoise( 0 )
     Conf->GetValue<float>("DarkM0WindowUp", fWinUp);
     Conf->GetValue<float>("DarkM1Window", fWindow);
 	Conf->GetValue<int>("NumOfTubes", fNPMTs);
-	Conf->GetValue<int>("fMinTubeID", fMinTubeID);
-	Conf->GetValue<int>("fMaxTubeID", fMaxTubeID);
+	Conf->GetValue<int>("MinTubeID", fMinTubeID);
+	Conf->GetValue<int>("MaxTubeID", fMaxTubeID);
 }
 
 PMTNoise::~PMTNoise()
