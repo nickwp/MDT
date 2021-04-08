@@ -11,4 +11,6 @@ The library provides C++ classes that manage three tasks:
  - Triggering digitized hits
     - A simple algorithm based on coutung number of digitized hits falling in a sliding time winodw
  
-# Basic inputs and outputs
+# Installation
+Currently, compilation is done by a traditional. Mordern compilation by CMake will be supported soon. 
+The following describes the procedure using [compile.sh](https://github.com/akutsuR/MDT/blob/master/compile.sh)
