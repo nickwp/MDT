@@ -49,6 +49,7 @@ py::class_<MDTManager>(m, "MDTManager")
 	.def("DoAddDark", &MDTManager::DoAddDark)
 	.def("DoDigitize", &MDTManager::DoDigitize)
 	.def("DoTrigger", &MDTManager::DoTrigger)
+	.def("DoInitialize", &MDTManager::DoInitialize)
 	.def("GetTriggerInfo", &MDTManager::GetTriggerInfo, py::return_value_policy::reference)
 	.def("GetHitTubeCollection", &MDTManager::GetHitTubeCollection, py::return_value_policy::reference);
 }
