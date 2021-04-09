@@ -11,5 +11,5 @@ The library provides C++ classes that manage three tasks:
     - Parameters describing PMT charcteristics such as timing resolution can be varied
     - Digitized hits by PMT afterpusing can be added (not supported yet)
  - Triggering digitized hits
-    - A simple algorithm based on coutung number of digitized hits falling in a sliding time winodw
+    - A simple algorithm that counts number of digitized hits falling in a sliding time winodw
     - Selectable trigger window and thershold
