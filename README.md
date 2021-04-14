@@ -9,7 +9,7 @@ The library provides C++ classes that manage three tasks:
     - Timing and charge of a digitized hit is simulated by a simple model used in WCSim
     - The library is capable of accomodating alternative models 
     - Parameters describing PMT charcteristics such as timing resolution can be varied
-    - Digitized hits by PMT afterpusing can be added (not supported yet)
+    - Digitized hits by PMT afterpusing can be added
  - Triggering digitized hits
     - A simple algorithm that counts number of digitized hits falling in a sliding time winodw
     - Selectable trigger window and thershold
