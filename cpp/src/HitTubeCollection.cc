@@ -21,7 +21,6 @@ void HitTubeCollection::Clear()
         delete itr->second; itr->second=NULL;
     }
     fPHs.clear();
-
     vector<int>().swap(fTubeList);
 }
 
@@ -34,10 +33,10 @@ void HitTubeCollection::AddHitTube(const int id)
     }
 }
 
-void HitTubeCollection::AddTrueHit(const int id, const float time)
+void HitTubeCollection::AddTrueHit(const int tube_id, const float time, const int parent_id)
 {
-	this->AddHitTube(id);
-	fPHs[id]->AddRawPE(time);	
+	this->AddHitTube(tube_id);
+	fPHs[tube_id]->AddRawPE(time, parent_id);
 }
 
 void HitTubeCollection::AddDigiHit(const int id, const float time, const float charge)

@@ -3,11 +3,12 @@
 HitTube::HitTube(int id)
 {
     fNRawPE=0;
-    fTimeRaw.clear();
+    fPhotoElectrons.clear();
 
     fNDigiHits=0;
     fTimeDigi.clear();
     fChargeDigi.clear();
+    fParentCompDigi.clear();
 
     fTubeID = id;
 }
@@ -15,7 +16,9 @@ HitTube::HitTube(int id)
 
 HitTube::~HitTube()
 {
-    vector<float>().swap( fTimeRaw );
+    vector<pair<float,int>>().swap( fPhotoElectrons );
+
     vector<float>().swap( fTimeDigi );
     vector<float>().swap( fChargeDigi );
+    vector<vector<int>>().swap( fParentCompDigi );
 }

@@ -15,14 +15,13 @@ class HitDigitizer
     public:
         HitDigitizer(int s=67823);
         virtual ~HitDigitizer();
-        void Digitize(HitTubeCollection*);
-        void DigitizeTube(HitTube*);
+        void Digitize(HitTubeCollection*, PMTResponse*);
+        void DigitizeTube(HitTube*, PMTResponse*);
 
         void ApplyThreshold(double&, bool&);
         double DoTruncate(const double, const double);
 
     private:
-        PMTResponse *fPMT;
         float fPrecisionCharge;
         float fPrecisionTiming;
         float fEfficiency;

@@ -1,5 +1,6 @@
 #include "MTRandom.h"
 #include <cmath>
+#include <iostream>
 
 const double kPI = 3.14159265358979323846; // TMath::Pi
 // Taken from $ROOTSYS/math/mathcore/TRadom.cxx and TRandom3.cxx
@@ -170,4 +171,18 @@ int MTRandom::Poisson(double mean)
       // use Gaussian approximation vor very large values
       return int(Gaus(0.,1.)*sqrt(mean) + mean +0.5);
    }
+}
+
+
+// Generate random number that follows given 1D histogram (CDF)
+double MTRandom::Histogram(vector<double> &edgeLow, 
+                            vector<double> &binCenter, 
+                            vector<double> &cdf)
+{
+    double value = this->Rndm();
+    auto low = lower_bound(cdf.begin(), cdf.end(), value);
+    int index = low - cdf.begin();
+    if( *low!=value ){ index -= 1; }
+    double dx = binCenter[index+1] - binCenter[index];
+    return binCenter[index] + dx*( (value - cdf[index])/(cdf[index+1] - cdf[index]) );
 }

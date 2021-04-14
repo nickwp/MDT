@@ -15,7 +15,7 @@ class HitTubeCollection
         virtual ~HitTubeCollection();
         bool HasTube(const int id){ return fPHs.count(id)!=0 ? true : false; } 
         void AddHitTube(const int);
-		void AddTrueHit(const int, const float);
+		void AddTrueHit(const int, const float, const int);
 		void AddDigiHit(const int, const float, const float);
         int GetNumOfHitTubes() const { return fPHs.size(); }
         int GetTotalNumOfTrueHits();
@@ -38,5 +38,4 @@ class HitTubeCollection
 		vector<int> fTubeList;
         int fNTrueHitsTotal;
         int fNDigiHitsTotal;
-
 };

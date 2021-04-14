@@ -8,7 +8,6 @@ fEfficiency( 0.985 ),
 fIntegWindow( 200. )
 {
     fRand = new MTRandom( seed );
-    fPMT =new PMTResponse( fRand->Integer(10000000) );
     Configuration *Conf = Configuration::GetInstance();
     Conf->GetValue<float>("DigiHitIntegrationWindow", fIntegWindow);
     Conf->GetValue<float>("PrecisionTiming", fPrecisionTiming);
@@ -17,25 +16,23 @@ fIntegWindow( 200. )
 
 HitDigitizer::~HitDigitizer()
 {
-    if( fPMT ){ delete fPMT; fPMT = NULL; } 
     if( fRand ){ delete fRand; fRand = NULL; }
 }
 
-void HitDigitizer::Digitize(HitTubeCollection *hc)
+void HitDigitizer::Digitize(HitTubeCollection *hc, PMTResponse *pr)
 {
     for(hc->Begin(); !hc->IsEnd(); hc->Next())
     {
-        this->DigitizeTube( &(*hc)() );
+        this->DigitizeTube(&(*hc)(), pr);
     }
 }
 
 // Based on WCSimWCDigitizerSKI::DigitizeHits in WCSimWCDigitizer.cc
-void HitDigitizer::DigitizeTube(HitTube *aHT)
+void HitDigitizer::DigitizeTube(HitTube *aHT, PMTResponse *pr)
 {
+    aHT->SortTrueHits();
     const int NPE = aHT->GetNRawPE();
-    vector<float> times = aHT->GetAllTimeRaw();
-    vector<float> rawspe(NPE, 0.);
-    std::sort(times.begin(), times.end());
+    const vector<pair<float, int>> PEs = aHT->GetPhotoElectrons();
 
     // Taken from WCSimWCDigitizerSKI::DigitizeHits
     double sumSPE = 0.;
@@ -44,15 +41,18 @@ void HitDigitizer::DigitizeTube(HitTube *aHT)
     double digiT = 0.;
     double digiQ = 0.;
 
-    double intgr_srt = times[0];
+    double intgr_srt = (double)PEs[0].first;
     double intgr_end = intgr_srt+fIntegWindow;
     int nDigi = 0;
+    vector<int> parent_composition;  
+    parent_composition.clear();
 
     for(int iPE=0; iPE<NPE; iPE++)
     {
-        if( times[iPE]>=intgr_srt && times[iPE]<intgr_end )
+        if( PEs[iPE].first>=intgr_srt && PEs[iPE].first<intgr_end )
         {
-            sumSPE += fPMT->GetRawSPE();
+            sumSPE += pr->GetRawSPE();
+            parent_composition.push_back( PEs[iPE].second );
         }
         else
         {
@@ -61,24 +61,27 @@ void HitDigitizer::DigitizeTube(HitTube *aHT)
             this->ApplyThreshold(digiQ, isAlive);
             if( isAlive && nDigi==0 )
             {
-                tSmeared = fPMT->HitTimeSmearing(digiQ);
+                tSmeared = pr->HitTimeSmearing(digiQ);
                 digiQ *= fEfficiency;
                 digiT += tSmeared;
                 digiQ = this->DoTruncate(digiQ, fPrecisionCharge);
                 digiT = this->DoTruncate(digiT, fPrecisionTiming);
-                aHT->AddDigiHit(digiT, digiQ);
+                aHT->AddDigiHit(digiT, digiQ, parent_composition);
                 nDigi += 1;
             }
             sumSPE = 0.;
-            intgr_srt = times[iPE];
+            parent_composition.clear(); 
+
+            intgr_srt = PEs[iPE].first;
             intgr_end = intgr_srt+fIntegWindow;
-            sumSPE += fPMT->GetRawSPE();
+            sumSPE += pr->GetRawSPE();
+            parent_composition.push_back( PEs[iPE].second );
         }
     }
 
     digiT = intgr_srt;
     digiQ = sumSPE;
-    tSmeared = fPMT->HitTimeSmearing(digiQ);
+    tSmeared = pr->HitTimeSmearing(digiQ);
     this->ApplyThreshold(digiQ, isAlive);
     if( isAlive )
     {
@@ -86,7 +89,7 @@ void HitDigitizer::DigitizeTube(HitTube *aHT)
         digiT += tSmeared ;
         digiQ = this->DoTruncate(digiQ, fPrecisionCharge);
         digiT = this->DoTruncate(digiT, fPrecisionTiming);
-        aHT->AddDigiHit(digiT, digiQ);
+        aHT->AddDigiHit(digiT, digiQ, parent_composition);
     }
 }
 

@@ -7,6 +7,7 @@
 #include "TriggerInfo.h"
 #include "TriggerAlgo.h"
 #include "Configuration.h"
+#include "PMTAfterpulse.h"
 
 class MDTManager
 {
@@ -21,11 +22,14 @@ class MDTManager
         void DoDigitize();   
         void DoTrigger();
         void DoInitialize();
+        void DoAddAfterpulse();
 
     private:
         TriggerAlgo *fTrigAlgo;
         TriggerInfo *fTrigInfo;
         HitDigitizer *fDgtzr;
+        PMTResponse *fPMTResp;
         PMTNoise *fDark;
         HitTubeCollection *fPHC; 
+        PMTAfterpulse *fAftpulse;
 };

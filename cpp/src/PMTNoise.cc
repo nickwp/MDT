@@ -1,6 +1,8 @@
 #include "PMTNoise.h"
 #include "Configuration.h"
 #include "HitTube.h"
+#include "HitDigitizer.h"
+#include "PMTResponse.h"
 
 PMTNoise::PMTNoise(const int seed) :
 fNPMTs( 10184 ),
@@ -15,6 +17,8 @@ fDarkMode( 1 ),
 fNnoise( 0 )
 {
     fRand = new MTRandom(seed);
+    fAftpulse = new PMTAfterpulse();
+
     fNoisePMT.clear();
     fNoiseTime.clear();
 
@@ -31,7 +35,8 @@ fNnoise( 0 )
 
 PMTNoise::~PMTNoise()
 {
-    if( !fRand ){ delete fRand; fRand=NULL;}
+    if( !fRand ){ delete fRand; fRand = NULL;}
+    if( fAftpulse ){ delete fAftpulse; fAftpulse = NULL; }
 }
 
 
@@ -197,7 +202,59 @@ void PMTNoise::Add(HitTubeCollection *hc, double tWinLow, double tWinUp)
     {
         int tubeID = this->GetNoiseTube(k);
         float time = this->GetNoiseTime(k); 
-		hc->AddTrueHit(tubeID, time);
+		hc->AddTrueHit(tubeID, time, -1);
     }
     cout<<" NumCkovPE(dark PE): " << nDarkHits <<endl;
+}
+
+
+void PMTNoise::AddAfterpulse(HitTubeCollection *hc, HitDigitizer *hd, PMTResponse *pr)
+{
+    int NDigiHitsBf = hc->GetTotalNumOfDigiHits();
+    int NAP = 0;
+    int NDigi = 0;
+    for(hc->Begin(); !hc->IsEnd(); hc->Next())
+    {
+        HitTube *aPH = &(*hc)();
+        NDigi += aPH->GetNDigiHits();
+
+        // Store digitize hits due to afterpluse temporally
+        HitTube *aPHAP = new HitTube(aPH->GetTubeID());
+        for(int i=0; i<aPH->GetNDigiHits(); i++)
+        {
+            float charge = aPH->GetChargeDigi(i);
+            const vector<int> composition = aPH->GetParentCompositionDigi(i);
+            if( fAftpulse->GenerateAfterpulse(charge, composition, fRand) )
+            {
+                double charge_ap = pr->GetRawSPE();
+                bool pass = false;
+                hd->ApplyThreshold(charge_ap, pass);
+                while( !pass )
+                {
+                    charge_ap = pr->GetRawSPE();
+                    hd->ApplyThreshold(charge_ap, pass);
+                }
+
+                float time_ap = fAftpulse->GetAfterpulseTime(aPH->GetTimeDigi(i), fRand);
+                vector<int> comp_ap(1, -2);
+                aPHAP->AddDigiHit(time_ap, charge_ap, comp_ap);
+                NAP += 1;
+            }
+        }
+
+        for(int i=0; i<aPHAP->GetNDigiHits(); i++)
+        {
+            float time = aPHAP->GetTimeDigi(i); 
+            float charge = aPHAP->GetChargeDigi(i);
+            const vector<int> comp = aPHAP->GetParentCompositionDigi(i);
+            aPH->AddDigiHit(time, charge, comp);
+        }
+    }
+
+    int NDigiHitsAf = hc->GetTotalNumOfDigiHits();
+    cout<<" NDigiHits(w/o AP): " << NDigiHitsBf 
+        <<" NDigiHits(w/ AP): " << NDigiHitsAf 
+        <<" NAP: " << NAP 
+        <<" NDigi: " << NDigi
+        <<endl;
 }

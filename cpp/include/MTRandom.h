@@ -1,5 +1,10 @@
 #pragma once
 
+#include <vector>
+#include <algorithm>
+
+using std::vector;
+
 class MTRandom
 {
     public:
@@ -10,6 +15,7 @@ class MTRandom
         int Poisson(double);
         unsigned int Integer(unsigned int imax){ return (unsigned int)(imax*Rndm()); }
         double Uniform(double x1, double x2){ return x1 + (x2-x1)*Rndm(); }
+        double Histogram(vector<double>&, vector<double>&, vector<double>&);
 
     private :
         void SetSeed(int);

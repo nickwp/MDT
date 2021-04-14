@@ -9,12 +9,16 @@
 
 #include "MTRandom.h"
 #include "HitTubeCollection.h"
+#include "PMTAfterpulse.h"
 
 using std::cout;
 using std::endl;
 using std::vector;
 using std::pair;
 using std::map;
+
+class HitDigitizer;
+class PMTResponse;
 
 class PMTNoise 
 {
@@ -40,6 +44,8 @@ class PMTNoise
         void Add(HitTubeCollection*, double, double);
         void FindRanges(HitTubeCollection*, vector<pair<double, double>>&);
 
+        void AddAfterpulse(HitTubeCollection*, HitDigitizer*, PMTResponse *pr);
+
     private :
         MTRandom *fRand;
         int fNPMTs;
@@ -56,4 +62,6 @@ class PMTNoise
         int fNnoise;
         vector<int> fNoisePMT;
         vector<double> fNoiseTime;
+
+        PMTAfterpulse *fAftpulse;
 };

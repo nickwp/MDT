@@ -10,6 +10,7 @@ MDTManager::MDTManager(int seed)
     fPHC = new HitTubeCollection();
     fDark = new PMTNoise( rndm->Integer(1000000) );
     fDgtzr = new HitDigitizer( rndm->Integer(1000000) );
+    fPMTResp =new PMTResponse( rndm->Integer(10000000) );
 
     delete rndm; rndm = NULL;
 }
@@ -21,6 +22,7 @@ MDTManager::~MDTManager()
     if( fPHC ){ delete fPHC; fPHC = NULL; }
     if( fDark ){ delete fDark; fDark = NULL; }
     if( fDgtzr ){ delete fDgtzr; fDgtzr = NULL; }
+    if( fPMTResp ){ delete fPMTResp; fPMTResp = NULL; } 
 }
 
 void MDTManager::DoAddDark()
@@ -30,12 +32,17 @@ void MDTManager::DoAddDark()
 
 void MDTManager::DoDigitize()
 {
-    fDgtzr->Digitize(fPHC);
+    fDgtzr->Digitize(fPHC, fPMTResp);
 }
 
 void MDTManager::DoTrigger()
 {
     fTrigAlgo->NDigits(fPHC, fTrigInfo);
+}
+
+void MDTManager::DoAddAfterpulse()
+{
+    fDark->AddAfterpulse(fPHC, fDgtzr, fPMTResp);
 }
 
 void MDTManager::DoInitialize()

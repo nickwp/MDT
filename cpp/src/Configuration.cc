@@ -31,11 +31,6 @@ void Configuration::AddValue(string name, string svalue)
     fMpValue[name] = aVal;
 }
 
-//template <typename T> T Configuration::GetValue(string name)
-//{
-//    throw std::exception();
-//}
-
 template <> int Configuration::GetValue<int>(string name)
 {
     if( this->IsAvailable(name) )
@@ -53,11 +48,6 @@ template <> string Configuration::GetValue<string>(string name)
     if( this->IsAvailable(name) )
     return fMpValue[name].s;
 }
-
-//template <typename T> void  Configuration::GetValue(string name, T &t)
-//{
-//    throw std::exception();
-//}
 
 template <> void Configuration::GetValue<int>(string name, int &t)
 {
