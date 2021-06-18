@@ -24,6 +24,8 @@ class MDTManager
         void DoInitialize();
         void DoAddAfterpulse();
 
+        void SetHitTubeCollection(HitTubeCollection*);
+
     private:
         TriggerAlgo *fTrigAlgo;
         TriggerInfo *fTrigInfo;

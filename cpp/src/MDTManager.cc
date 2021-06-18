@@ -50,3 +50,9 @@ void MDTManager::DoInitialize()
     fTrigInfo->Clear();
     fPHC->Clear();
 }
+
+void MDTManager::SetHitTubeCollection(HitTubeCollection *hc)
+{
+    if( fPHC ){ delete fPHC; fPHC = NULL; }
+    fPHC = hc;
+}
