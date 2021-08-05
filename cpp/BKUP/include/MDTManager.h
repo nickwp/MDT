@@ -20,29 +20,29 @@ class MDTManager
         MDTManager(int seed=78923);
         virtual ~MDTManager();
 
-        HitTubeCollection* GetHitTubeCollection(const string &s="Def") { return fPHC[s]; }
-        TriggerInfo* GetTriggerInfo(const string &s="Def") { return fTrigInfo[s]; }
+        HitTubeCollection* GetHitTubeCollection(const string &s) { return fPHC[s]; }
+        TriggerInfo* GetTriggerInfo() { return fTrigInfo; }
         
-        void RegisterPMTType(const string &s="Def", PMTResponse *p=0);
+        void RegisterPMTType(const string&, PMTResponse*);
 
         void DoInitialize();
-        void DoAddDark(const string &s="Def");
-        void DoDigitize(const string &s="Def");   
-        void DoTrigger(const string &s="Def");
-        void DoAddAfterpulse(const string &s="Def");
+        void DoAddDark(const string&);
+        void DoDigitize(const string&);   
+        void DoTrigger(const string&);
+        void DoAddAfterpulse(const string&);
         
-        void SetHitTubeCollection(HitTubeCollection*, const string &s="Def");
+        void SetHitTubeCollection(HitTubeCollection*, const string&);
         bool HasThisPMTType(const string&);
 
 
     private:
         TriggerAlgo *fTrigAlgo;
+        TriggerInfo *fTrigInfo;
         HitDigitizer *fDgtzr;
         MTRandom *fRndm;
 
-        map<string, TriggerInfo*> fTrigInfo;
         map<string, PMTResponse*> fPMTResp;
         map<string, PMTNoise*> fDark;
         map<string, HitTubeCollection*> fPHC; 
-        string fDefName;
+//        map<string, PMTAfterpulse*> fAftpulse;
 };

@@ -15,15 +15,16 @@ using std::vector;
 
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
-GenericPMTResponse::GenericPMTResponse(int seed, const string &pmtname)
+GenericPMTResponse::GenericPMTResponse(const int seed, const string &pmtname)
 {
+    fRand=new MTRandom(seed);
+    fPMTType = pmtname;
     fSclFacTTS = 1.0;
-    this->Initialize(seed, pmtname);
+    this->Initialize();
 }
 
 GenericPMTResponse::GenericPMTResponse()
 {
-    fSclFacTTS = 1.0;
 }
 
 GenericPMTResponse::~GenericPMTResponse()
@@ -31,11 +32,8 @@ GenericPMTResponse::~GenericPMTResponse()
     if( !fRand ){ delete fRand; fRand=NULL; }
 }
 
-void GenericPMTResponse::Initialize(int seed, const string &pmtname)
+void GenericPMTResponse::Initialize()
 {
-    fRand=new MTRandom(seed);
-    fPMTType = pmtname;
-
     fTResConstant = 1.890;
     fTResMinimum = 0.32;
 
@@ -120,24 +118,20 @@ void GenericPMTResponse::LoadCDFOfSPE(const string &filename)
 const double ResponseBoxandLine20inchHQE::ksig_param[4] = {0.6314, 0.06260, 0.5711,23.96};
 const double ResponseBoxandLine20inchHQE::klambda_param[2] = {0.4113, 0.07827};
 
-ResponseBoxandLine20inchHQE::ResponseBoxandLine20inchHQE(int seed, const string &pmtname)
+ResponseBoxandLine20inchHQE::ResponseBoxandLine20inchHQE(const int seed, const string &pmtname)
 {
-    this->Initialize(seed, pmtname);
-}
-
-ResponseBoxandLine20inchHQE::ResponseBoxandLine20inchHQE()
-{
+    fRand=new MTRandom(seed);
+    fPMTType = pmtname;
+    fSclFacTTS = 1.0;
+    this->Initialize();
 }
 
 ResponseBoxandLine20inchHQE::~ResponseBoxandLine20inchHQE()
 {
 }
 
-void ResponseBoxandLine20inchHQE::Initialize(int seed, const string &pmtname)
+void ResponseBoxandLine20inchHQE::Initialize()
 {
-    fPMTType = pmtname;
-    fRand=new MTRandom(seed);
-
     fhighcharge_param[0] = 2*ksig_param[0]*ksig_param[1]*ksig_param[3]*sqrt(ksig_param[3])*exp(-ksig_param[1]*ksig_param[3]);
     fhighcharge_param[1] = ksig_param[0]*((1-2*ksig_param[1]*ksig_param[3])*exp(-ksig_param[1]*ksig_param[3])+ksig_param[2]);
 
@@ -171,28 +165,22 @@ float ResponseBoxandLine20inchHQE::HitTimeSmearing(float Q)
 
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
-Response3inchR14374::Response3inchR14374(int seed, const string &pmtname)
+Response3inchR14374::Response3inchR14374(const int seed, const string &pmtname)
 {
     fTimeResAt1PE = 0.6; // B. Quilain, to match the TTS = 1.4ns (sigma at 0.6) measured at 1 p.e. 
-    this->Initialize(seed, pmtname);
+
+    fRand = new MTRandom(seed);
+    fPMTType = pmtname;
+    fSclFacTTS = 1.0;
+    this->Initialize();
 }
-
-Response3inchR14374::Response3inchR14374()
-{
-    fTimeResAt1PE = 0.6; // B. Quilain, to match the TTS = 1.4ns (sigma at 0.6) measured at 1 p.e. 
-}
-
-
 
 Response3inchR14374::~Response3inchR14374()
 {
 }
 
-void Response3inchR14374::Initialize(int seed, const string &pmtname)
+void Response3inchR14374::Initialize()
 {
-    fPMTType = pmtname;
-    fRand = new MTRandom(seed);
-
     map<string, string> s;
     s["ScalFactorTTS"] = "ScalFactorTTS";
     s["SPECDFFile"] = "SPECDFFile";

@@ -4,17 +4,18 @@ MDTManager::MDTManager(int seed)
 {
     fRndm = new MTRandom( seed );
     fTrigAlgo = new TriggerAlgo();
+    fTrigInfo = new TriggerInfo();
     fDgtzr = new HitDigitizer( fRndm->Integer(1000000) );
 
     fPMTResp.clear();
     fDark.clear();
     fPHC.clear();
-    fTrigInfo.clear();
 }
 
 MDTManager::~MDTManager()
 {
     if( fTrigAlgo ){ delete fTrigAlgo; fTrigAlgo = NULL; }
+    if( fTrigInfo ){ delete fTrigInfo; fTrigInfo = NULL; }
     if( fRndm ){ delete fRndm; fRndm = NULL; }
 
     map<string, PMTResponse*>::iterator iPMTResp;
@@ -38,13 +39,6 @@ MDTManager::~MDTManager()
         delete iPHC->second; iPHC->second = NULL;
     }
     fPHC.clear();
-
-    map<string, TriggerInfo*>::iterator iTrigInfo;
-    for(iTrigInfo=fTrigInfo.begin(); iTrigInfo!=fTrigInfo.end(); iTrigInfo++)
-    {
-        delete iTrigInfo->second; iTrigInfo->second = NULL;
-    }
-    fTrigInfo.clear();
 }
 
 void MDTManager::DoAddDark(const string &pmtname)
@@ -67,7 +61,7 @@ void MDTManager::DoTrigger(const string &pmtname)
 {
     if( this->HasThisPMTType(pmtname) )
     {
-        fTrigAlgo->NDigits(fPHC[pmtname], fTrigInfo[pmtname]);
+        fTrigAlgo->NDigits(fPHC[pmtname], fTrigInfo);
     }
 }
 
@@ -81,12 +75,7 @@ void MDTManager::DoAddAfterpulse(const string &pmtname)
 
 void MDTManager::DoInitialize()
 {
-    map<string, TriggerInfo*>::iterator iTrigInfo;
-    for(iTrigInfo=fTrigInfo.begin(); iTrigInfo!=fTrigInfo.end(); iTrigInfo++)
-    {
-        iTrigInfo->second->Clear();
-    }
-
+    fTrigInfo->Clear();
     map<string, HitTubeCollection*>::iterator iPHC; 
     for(iPHC=fPHC.begin(); iPHC!=fPHC.end(); iPHC++)
     {
@@ -105,13 +94,13 @@ void MDTManager::SetHitTubeCollection(HitTubeCollection *hc, const string &pmtna
 
 void MDTManager::RegisterPMTType(const string &pmtname, PMTResponse *pmtResp)
 {
-    fTrigInfo[pmtname] = new TriggerInfo();
     fPHC[pmtname] = new HitTubeCollection();
     fDark[pmtname] = new PMTNoise(fRndm->Integer(1000000), pmtname);
-
-    if( pmtResp==0 ){ fPMTResp[pmtname] = new GenericPMTResponse(); }
-    else{ fPMTResp[pmtname] = pmtResp; }
-    fPMTResp[pmtname]->Initialize(fRndm->Integer(10000000), pmtname);
+    //fPMTResp[pmtname] =new PMTResponse(fRndm->Integer(10000000), pmtname);
+    //fPMTResp[pmtname] =new GenericPMTResponse(fRndm->Integer(10000000), pmtname);
+    //
+    fPMTResp[pmtname] = new ResponseBoxandLine20inchHQE(fRndm->Integer(10000000), pmtname);
+    fPMTResp[pmtname] = 
 }
 
 bool MDTManager::HasThisPMTType(const string &pmtname)

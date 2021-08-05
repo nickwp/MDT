@@ -15,9 +15,10 @@ class PMTResponse
     public:
         virtual double GetRawSPE() = 0; 
         virtual float HitTimeSmearing(float) = 0;
-        virtual void Initialize(int, const string &s="") = 0;
 
     protected:
+        virtual void Initialize() = 0;
+
         MTRandom *fRand;
         string fPMTType;
         float fSclFacTTS;
@@ -31,7 +32,6 @@ class GenericPMTResponse : public PMTResponse
         GenericPMTResponse(const int, const string &s="");
         GenericPMTResponse();
         virtual ~GenericPMTResponse();
-        void Initialize(int, const string &s="");
         virtual double GetRawSPE();
         virtual float HitTimeSmearing(float);
 
@@ -41,6 +41,7 @@ class GenericPMTResponse : public PMTResponse
         string fTxtFileSPECDF;
 
     private:
+        void Initialize();
         float fTResConstant;
         float fTResMinimum;
 };
@@ -49,13 +50,12 @@ class GenericPMTResponse : public PMTResponse
 class ResponseBoxandLine20inchHQE : public GenericPMTResponse
 {
     public: 
-        ResponseBoxandLine20inchHQE(int, const string &s="");
-        ResponseBoxandLine20inchHQE();
+        ResponseBoxandLine20inchHQE(const int, const string &s="");
         virtual ~ResponseBoxandLine20inchHQE();
         float HitTimeSmearing(float);
-        void Initialize(int, const string &s="");
 
     private:
+        void Initialize();
         static const double ksig_param[4];
         static const double klambda_param[2];
         double fhighcharge_param[2];
@@ -64,12 +64,11 @@ class ResponseBoxandLine20inchHQE : public GenericPMTResponse
 class Response3inchR14374 : public GenericPMTResponse
 {
     public: 
-        Response3inchR14374(int, const string &s="");
-        Response3inchR14374();
+        Response3inchR14374(const int, const string &s="");
         virtual ~Response3inchR14374();
         float HitTimeSmearing(float);
-        void Initialize(int, const string &s="");
 
     private:
+        void Initialize();
         double fTimeResAt1PE;
 };
