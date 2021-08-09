@@ -34,6 +34,8 @@ class MDTManager
         void SetHitTubeCollection(HitTubeCollection*, const string &s="Def");
         bool HasThisPMTType(const string&);
 
+        PMTResponse* GetPMTResponse(const string &s="Def") { return fPMTResp[s]; }
+
 
     private:
         TriggerAlgo *fTrigAlgo;

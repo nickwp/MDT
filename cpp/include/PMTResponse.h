@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
+
 #include "MTRandom.h"
+#include "TrueHit.h"
 
 using std::string;
 
@@ -13,9 +15,10 @@ using std::string;
 class PMTResponse
 {
     public:
-        virtual double GetRawSPE() = 0; 
+        virtual double GetRawSPE(const TrueHit* th=NULL) = 0; 
         virtual float HitTimeSmearing(float) = 0;
         virtual void Initialize(int, const string &s="") = 0;
+        virtual float GetDE(const TrueHit* th=NULL) = 0;
 
     protected:
         MTRandom *fRand;
@@ -32,8 +35,9 @@ class GenericPMTResponse : public PMTResponse
         GenericPMTResponse();
         virtual ~GenericPMTResponse();
         void Initialize(int, const string &s="");
-        virtual double GetRawSPE();
+        virtual double GetRawSPE(const TrueHit* th=NULL);
         virtual float HitTimeSmearing(float);
+        virtual float GetDE(const TrueHit* th=NULL);
 
     protected:
         void LoadCDFOfSPE(const string &s);
