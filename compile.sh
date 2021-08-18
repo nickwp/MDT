@@ -16,8 +16,8 @@ make all
 cd ..
 `ls -d ./cpp/* | grep .so | xargs -l ln -s`
 
-cd pywrap
-make clean
-make all
-cd ..
-`ls -d ./pywrap/* | grep .so | xargs -l ln -s`
+#cd pywrap
+#make clean
+#make all
+#cd ..
+#`ls -d ./pywrap/* | grep .so | xargs -l ln -s`
