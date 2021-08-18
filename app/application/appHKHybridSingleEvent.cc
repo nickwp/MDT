@@ -56,7 +56,7 @@ int main(int argc, char **argv)
         outData->AddTracks(inData->GetTrigger(0, 0), toffset, 0);
         for(int j=0; j<NPMTType; j++)
         {
-            inData->AddTrueHitsToMDT(MDT->GetHitTubeCollection(fPMTType[j]), toffset, j);
+            inData->AddTrueHitsToMDT(MDT->GetHitTubeCollection(fPMTType[j]), MDT->GetPMTResponse(fPMTType[j]), toffset, j);
             MDT->DoAddDark(fPMTType[j]);
             MDT->DoDigitize(fPMTType[j]);
             MDT->DoTrigger(fPMTType[j]);
