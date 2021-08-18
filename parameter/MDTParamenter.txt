@@ -1,0 +1,30 @@
+# Parameter setting 
+
+# Trigger setting
+< NDigitsThreshold = 5 >
+< NDigitsStepSize = 10 >
+< NDigitsPostTriggerWindow = +950. >
+< NDigitsPreTriggerWindow = -400. >
+< FailurePostTriggerWindow = +100000. >
+< FailurePreTriggerWindow = -400. >
+< FailureTime = 100. >
+
+# Dark noise setting
+< NumOfTubes = 10184 >
+< MinTubeID = 1 >
+< MaxTubeID = 10184 >
+< DarkAddMode = 0 > 
+< DarkRate = 1.0 > // kHz
+< DarkM0WindowLow = 0. > // ns
+< DarkM0WindowUp = 30000. > // ns
+< DarkM1Window = 8000. > // ns
+
+# 3" PMT setting
+< TimingResConstant = 1.890 > # TTS(FWHM) = 1ns at 1 charge
+< TimingResMinimum = 0.32 >
+< ScalFactorTTS = 0.75 > 
+
+# Digitizer setting
+< DigiHitIntegrationWindow = 200 >  // ns
+< PrecisionTiming = 0.1 > // ns
+< PrecisionCharge = 0. >
