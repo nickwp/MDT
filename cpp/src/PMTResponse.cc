@@ -64,7 +64,7 @@ void GenericPMTResponse::Initialize(int seed, const string &pmtname)
 }
 
 
-double GenericPMTResponse::GetRawSPE()
+double GenericPMTResponse::GetRawSPE(const TrueHit*)
 {
     int i;
     double random1=fRand->Rndm();
@@ -73,6 +73,11 @@ double GenericPMTResponse::GetRawSPE()
     }
     return (double(i-50) + fRand->Rndm())/22.83;
 } 
+
+bool GenericPMTResponse::ApplyDE(const TrueHit*)
+{
+    return true;
+}
 
 //// Currently based on 8" (instead of 20")
 //// But shifted to requirements (2ns TTS FWHM) for 1 pe

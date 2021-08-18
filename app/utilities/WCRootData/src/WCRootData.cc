@@ -45,15 +45,15 @@ void WCRootData::GetGeometryInfo(const char *filename)
 }
 
 
-void WCRootData::AddTrueHitsToMDT(MDTManager *mdt, float intTime, int iPMT)
+void WCRootData::AddTrueHitsToMDT(MDTManager *mdt)
 {
     HitTubeCollection *hc = mdt->GetHitTubeCollection();
-    this->AddTrueHitsToMDT(hc, intTime, iPMT);
+    this->AddTrueHitsToMDT(hc, mdt->GetPMTResponse(), 0., 0);
     hc = 0;
 }
 
 
-void WCRootData::AddTrueHitsToMDT(HitTubeCollection *hc, float intTime, int iPMT)
+void WCRootData::AddTrueHitsToMDT(HitTubeCollection *hc, PMTResponse *pr, float intTime, int iPMT)
 {
     const WCSimRootTrigger *aEvt = fSpEvt[iPMT]->GetTrigger(0);
     const int nCkovHits = aEvt->GetNcherenkovhits();
@@ -77,15 +77,18 @@ void WCRootData::AddTrueHitsToMDT(HitTubeCollection *hc, float intTime, int iPMT
             if( truetime<0. ){ continue; }
             if( aHitTime->GetParentID()<0 ){ continue; }
 
+            TrueHit *th = new TrueHit(truetime, aHitTime->GetParentID());
+            for(int k=0; k<3; k++){ th->SetPosition(k, aHitTime->GetPhotonEndPos(k)); }
+            if( !pr->ApplyDE(th) ){ continue; }
+
             // Add new hit tube
             if( !hc->HasTube(tubeID) )
             {
                 hc->AddHitTube(tubeID);
             }
-            (&(*hc)[tubeID])->AddRawPE(truetime+intTime, aHitTime->GetParentID());
+            (&(*hc)[tubeID])->AddRawPE(th);
         }
     }
-//    hc = 0;
 }
 
 void WCRootData::ReadFile(const char *filename, const vector<string> &list)
@@ -253,10 +256,8 @@ void WCRootData::FillTree()
     f->cd();
     fWCSimT->Fill();     
     fWCSimT->Write("",TObject::kOverwrite);
-    cout<<"******* HELLO " <<" " << tmp <<" " <<fSpEvt.size() <<endl;
     for(unsigned int i=0; i<fSpEvt.size(); i++)
     {
-        cout<<" ReInitializing " << i <<endl;
         fSpEvt[i]->ReInitialize();
     }
 }
