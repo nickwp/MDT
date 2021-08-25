@@ -29,6 +29,11 @@ class HitTube
         virtual ~HitTube();
         void SetTubeID(const int i){ fTubeID = i; }
         int GetTubeID() const { return fTubeID; }
+		float GetPosition(int i) const { return fPosition[i]; }
+		float GetPrientation(int i) const { return fOrientation[i]; }
+		void SetPosition(int i, float f) { fPosition[i] = f; }
+		void SetOrientation(int i, float f) { fPosition[i] = f; }
+
 
         void AddRawPE(const float t, const int id=9999999)
             { 
@@ -72,6 +77,8 @@ class HitTube
 
         int fTubeID;
         int fNDigiHits;
+		float fPosition[3];
+		float fOrientation[3];
         vector<float> fTimeDigi;
         vector<float> fChargeDigi;
         vector<vector<int>> fParentCompDigi;

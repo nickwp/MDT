@@ -57,7 +57,8 @@ void WCRootData::AddTrueHitsToMDT(HitTubeCollection *hc, PMTResponse *pr, float 
 {
     const WCSimRootTrigger *aEvt = fSpEvt[iPMT]->GetTrigger(0);
     const int nCkovHits = aEvt->GetNcherenkovhits();
-
+	float pmt_position[3];
+	float pmt_orientation[3];
     TClonesArray *hitTimeArray = aEvt->GetCherenkovHitTimes();
     for(int iHit=0; iHit<nCkovHits; iHit++)
     {
@@ -89,6 +90,12 @@ void WCRootData::AddTrueHitsToMDT(HitTubeCollection *hc, PMTResponse *pr, float 
             if( !hc->HasTube(tubeID) )
             {
                 hc->AddHitTube(tubeID);
+				this->GetPMTGeometryInfo(iPMT, tubeID, pmt_position, pmt_orientation);
+				for(int k=0; k<3; k++)
+				{
+            		(&(*hc)[tubeID])->SetPosition(k, pmt_position[k]);
+            		(&(*hc)[tubeID])->SetOrientation(k, pmt_orientation[k]);
+				}
             }
             (&(*hc)[tubeID])->AddRawPE(th);
         }
@@ -99,6 +106,14 @@ void WCRootData::ReadFile(const char *filename, const vector<string> &list)
 {
     fWCSimC = new TChain("wcsimT");
     fWCSimC->Add(filename);
+
+	const char *filename0 = NULL;
+	filename0 = fWCSimC->GetFile()->GetName();
+	if( filename0!=NULL )
+	{
+		this->GetGeometryInfo(filename0);
+	}
+
     if( list.size()==0 ) // default
     {
         fSpEvt.push_back( 0 );
@@ -428,4 +443,14 @@ void WCRootData::CopyTree(const char *filename,
         fout->Close();
     }
     fin->Close();
+}
+
+void WCRootData::GetPMTGeometryInfo(const int iPMT, const int id, float *position, float *orientation)
+{
+	const WCSimRootPMT *tube = fWCGeom->GetPMTPtr(id, bool(iPMT));
+	for(int i=0; i<3; i++)
+	{
+		position[i] = tube->GetPosition(i);
+		orientation[i] = tube->GetOrientation(i);
+	}
 }

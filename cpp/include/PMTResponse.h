@@ -2,7 +2,7 @@
 
 #include <string>
 #include "MTRandom.h"
-#include "TrueHit.h"
+#include "HitTube.h"
 
 using std::string;
 
@@ -14,10 +14,10 @@ using std::string;
 class PMTResponse
 {
     public:
-        virtual double GetRawSPE(const TrueHit* th=NULL) = 0; 
-        virtual float HitTimeSmearing(float) = 0;
+        virtual double GetRawSPE(const TrueHit* th=NULL, const HitTube* ht=NULL) = 0; 
+        virtual float HitTimeSmearing(float, const TrueHit* th=NULL, const HitTube* ht=NULL) = 0;
         virtual void Initialize(int, const string &s="") = 0;
-        virtual bool ApplyDE(const TrueHit* th=NULL) = 0;
+        virtual bool ApplyDE(const TrueHit* th=NULL, const HitTube* ht=NULL) = 0;
 
     protected:
         MTRandom *fRand;
@@ -34,9 +34,9 @@ class GenericPMTResponse : public PMTResponse
         GenericPMTResponse();
         virtual ~GenericPMTResponse();
         void Initialize(int, const string &s="");
-        virtual double GetRawSPE(const TrueHit* th=NULL);
-        virtual float HitTimeSmearing(float);
-        virtual bool ApplyDE(const TrueHit* th=NULL);
+        virtual double GetRawSPE(const TrueHit* th=NULL, const HitTube* ht=NULL);
+        virtual float HitTimeSmearing(float, const TrueHit* th=NULL, const HitTube* ht=NULL);
+        virtual bool ApplyDE(const TrueHit* th=NULL, const HitTube* ht=NULL);
 
     protected:
         void LoadCDFOfSPE(const string &s);
@@ -55,7 +55,7 @@ class ResponseBoxandLine20inchHQE : public GenericPMTResponse
         ResponseBoxandLine20inchHQE(int, const string &s="");
         ResponseBoxandLine20inchHQE();
         virtual ~ResponseBoxandLine20inchHQE();
-        float HitTimeSmearing(float);
+        float HitTimeSmearing(float, const TrueHit* th=NULL, const HitTube* ht=NULL);
         void Initialize(int, const string &s="");
 
     private:
@@ -70,7 +70,7 @@ class Response3inchR14374 : public GenericPMTResponse
         Response3inchR14374(int, const string &s="");
         Response3inchR14374();
         virtual ~Response3inchR14374();
-        float HitTimeSmearing(float);
+        float HitTimeSmearing(float,  const TrueHit* th=NULL, const HitTube* ht=NULL);
         void Initialize(int, const string &s="");
 
     private:

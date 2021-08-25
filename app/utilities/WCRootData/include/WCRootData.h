@@ -69,6 +69,7 @@ class WCRootData
         bool fMultDigiHits;
 
     private:
+		void GetPMTGeometryInfo(const int, const int, float*, float*);
         TString fOutFileName;
 };
 
