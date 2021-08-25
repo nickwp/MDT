@@ -30,9 +30,9 @@ class HitTube
         void SetTubeID(const int i){ fTubeID = i; }
         int GetTubeID() const { return fTubeID; }
 		float GetPosition(int i) const { return fPosition[i]; }
-		float GetPrientation(int i) const { return fOrientation[i]; }
+		float GetOrientation(int i) const { return fOrientation[i]; }
 		void SetPosition(int i, float f) { fPosition[i] = f; }
-		void SetOrientation(int i, float f) { fPosition[i] = f; }
+		void SetOrientation(int i, float f) { fOrientation[i] = f; }
 
 
         void AddRawPE(const float t, const int id=9999999)

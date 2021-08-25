@@ -40,7 +40,6 @@ void WCRootData::GetGeometryInfo(const char *filename)
     t->GetEntry( 0 );
     fDetCentreY = fWCGeom->GetWCOffset(1);
     cout<<" DetCentreY: " << fDetCentreY <<endl;
-
     f->Close();
 }
 
@@ -55,6 +54,10 @@ void WCRootData::AddTrueHitsToMDT(MDTManager *mdt)
 
 void WCRootData::AddTrueHitsToMDT(HitTubeCollection *hc, PMTResponse *pr, float intTime, int iPMT)
 {
+	// Set all tubes no matter how many of true hits, anyway
+	// Position and orientation are also set to each tube
+	this->SetTubes(hc, iPMT);
+
     const WCSimRootTrigger *aEvt = fSpEvt[iPMT]->GetTrigger(0);
     const int nCkovHits = aEvt->GetNcherenkovhits();
 	float pmt_position[3];
@@ -86,17 +89,6 @@ void WCRootData::AddTrueHitsToMDT(HitTubeCollection *hc, PMTResponse *pr, float 
             for(int k=0; k<3; k++){ th->SetStartDirection(k, aHitTime->GetPhotonStartDir(k)); }
             if( !pr->ApplyDE(th) ){ continue; }
 
-            // Add new hit tube
-            if( !hc->HasTube(tubeID) )
-            {
-                hc->AddHitTube(tubeID);
-				this->GetPMTGeometryInfo(iPMT, tubeID, pmt_position, pmt_orientation);
-				for(int k=0; k<3; k++)
-				{
-            		(&(*hc)[tubeID])->SetPosition(k, pmt_position[k]);
-            		(&(*hc)[tubeID])->SetOrientation(k, pmt_orientation[k]);
-				}
-            }
             (&(*hc)[tubeID])->AddRawPE(th);
         }
     }
@@ -445,12 +437,18 @@ void WCRootData::CopyTree(const char *filename,
     fin->Close();
 }
 
-void WCRootData::GetPMTGeometryInfo(const int iPMT, const int id, float *position, float *orientation)
+void WCRootData::SetTubes(HitTubeCollection *hc, const int iPMT)
 {
-	const WCSimRootPMT *tube = fWCGeom->GetPMTPtr(id, bool(iPMT));
-	for(int i=0; i<3; i++)
+	const int nTubes = fWCGeom->GetWCNumPMT(bool(iPMT));
+	for(int i=0; i<nTubes; i++)
 	{
-		position[i] = tube->GetPosition(i);
-		orientation[i] = tube->GetOrientation(i);
+		const WCSimRootPMT *tube = fWCGeom->GetPMTPtr(i, bool(iPMT));
+		const int tubeID = tube->GetTubeNo();
+		hc->AddHitTube(tubeID);
+		for(int j=0; j<3; j++)
+		{
+			(&(*hc)[tubeID])->SetPosition(j, tube->GetPosition(j));
+			(&(*hc)[tubeID])->SetOrientation(j, tube->GetOrientation(j));
+		}
 	}
 }

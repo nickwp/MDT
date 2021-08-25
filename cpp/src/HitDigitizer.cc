@@ -56,7 +56,7 @@ void HitDigitizer::DigitizeTube(HitTube *aHT, PMTResponse *pr)
     {
         if( PEs[iPE]->GetTime()>=intgr_srt && PEs[iPE]->GetTime()<intgr_end )
         {
-            sumSPE += pr->GetRawSPE(PEs[iPE]);
+            sumSPE += pr->GetRawSPE(PEs[iPE], aHT);
             parent_composition.push_back( PEs[iPE]->GetParentId() );
         }
         else
@@ -81,7 +81,7 @@ void HitDigitizer::DigitizeTube(HitTube *aHT, PMTResponse *pr)
 
             intgr_srt = PEs[iPE]->GetTime();
             intgr_end = intgr_srt+fIntegWindow;
-            sumSPE += pr->GetRawSPE(PEs[iPE]);
+            sumSPE += pr->GetRawSPE(PEs[iPE], aHT);
             parent_composition.push_back( PEs[iPE]->GetParentId() );
         }
     }

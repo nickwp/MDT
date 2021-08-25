@@ -69,7 +69,7 @@ class WCRootData
         bool fMultDigiHits;
 
     private:
-		void GetPMTGeometryInfo(const int, const int, float*, float*);
+		void SetTubes(HitTubeCollection*, const int);
         TString fOutFileName;
 };
 

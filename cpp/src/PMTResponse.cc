@@ -81,7 +81,7 @@ bool GenericPMTResponse::ApplyDE(const TrueHit* th, const HitTube *ht)
 
 //// Currently based on 8" (instead of 20")
 //// But shifted to requirements (2ns TTS FWHM) for 1 pe
-float GenericPMTResponse::HitTimeSmearing(float Q, const TrueHit* th, const HitTube *ht) 
+float GenericPMTResponse::HitTimeSmearing(float Q) 
 {
     Q = (Q > 0.5) ? Q : 0.5;
     float timingResolution = 0.5*fSclFacTTS*(0.33 + sqrt(fTResConstant/Q));
@@ -165,7 +165,7 @@ void ResponseBoxandLine20inchHQE::Initialize(int seed, const string &pmtname)
 }
 
 
-float ResponseBoxandLine20inchHQE::HitTimeSmearing(float Q, const TrueHit* th, const HitTube *ht) 
+float ResponseBoxandLine20inchHQE::HitTimeSmearing(float Q) 
 {
   double sigma_lowcharge = ksig_param[0]*(exp(-ksig_param[1]*Q)+ksig_param[2]);
   double sigma_highcharge = fhighcharge_param[0]/sqrt(Q) + fhighcharge_param[1];
@@ -215,7 +215,7 @@ void Response3inchR14374::Initialize(int seed, const string &pmtname)
     this->LoadCDFOfSPE(fTxtFileSPECDF);
 }
 
-float Response3inchR14374::HitTimeSmearing(float Q, const TrueHit* th, const HitTube *ht)
+float Response3inchR14374::HitTimeSmearing(float Q)
 {
 // Use a tentative Q dependence proposed by B. Quilain,
 //  - Q<0.5.: force Q to be 0.5 to avoid divergence of timing resolution
