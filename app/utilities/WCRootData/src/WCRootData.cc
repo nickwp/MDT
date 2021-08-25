@@ -79,6 +79,10 @@ void WCRootData::AddTrueHitsToMDT(HitTubeCollection *hc, PMTResponse *pr, float 
 
             TrueHit *th = new TrueHit(truetime, aHitTime->GetParentID());
             for(int k=0; k<3; k++){ th->SetPosition(k, aHitTime->GetPhotonEndPos(k)); }
+            for(int k=0; k<3; k++){ th->SetDirection(k, aHitTime->GetPhotonEndDir(k)); }
+            th->SetStartTime(aHitTime->GetPhotonStartTime());
+            for(int k=0; k<3; k++){ th->SetStartPosition(k, aHitTime->GetPhotonStartPos(k)); }
+            for(int k=0; k<3; k++){ th->SetStartDirection(k, aHitTime->GetPhotonStartDir(k)); }
             if( !pr->ApplyDE(th) ){ continue; }
 
             // Add new hit tube
