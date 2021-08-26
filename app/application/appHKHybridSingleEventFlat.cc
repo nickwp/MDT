@@ -46,7 +46,8 @@ int main(int argc, char **argv)
     inData->ReadFile(fInFileName.c_str(), listWCRootEvt);
     outData->CreateTree(fOutFileName.c_str(), listWCRootEvt);
 
-    const int nEntries = inData->GetEntries();
+    int nEntries = inData->GetEntries();
+    if(fNEvtToProc > 0 && fNEvtToProc < nEntries) nEntries = fNEvtToProc;
     const float toffset = 0.; // for IWCD pile-up event generation 
 
     cout<<" Start processing " << nEntries <<" entries........ " <<endl;
