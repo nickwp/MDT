@@ -110,6 +110,7 @@ void WCRootData::ReadFile(const char *filename, const vector<string> &list)
     {
         fSpEvt.push_back( 0 );
         fWCSimC->SetBranchAddress("wcsimrootevent", &fSpEvt[0]);
+        fWCSimC->GetBranch("wcsimrootevent")->SetAutoDelete();
     }
     else
     {
@@ -118,6 +119,7 @@ void WCRootData::ReadFile(const char *filename, const vector<string> &list)
         for(unsigned int i=0; i<list.size(); i++)
         {
             fWCSimC->SetBranchAddress(list[i].c_str(), &fSpEvt[i]);
+            fWCSimC->GetBranch(list[i].c_str())->SetAutoDelete();
         }
     }
     fWCSimC->SetAutoDelete();
