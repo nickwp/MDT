@@ -121,6 +121,37 @@ void GenericPMTResponse::LoadCDFOfSPE(const string &filename)
 }
 
 ///////////////////////////////////////////////////////////////////
+
+FlatAngularResponse::FlatAngularResponse(float efficiency) : fEfficiency(efficiency)
+{
+}
+
+bool FlatAngularResponse::ApplyDE(const TrueHit *th, const HitTube *ht) {
+    return fRand->Rndm() > fEfficiency;
+}
+
+///////////////////////////////////////////////////////////////////
+
+LinearAngularResponse::LinearAngularResponse(float effAtCosTheta0, float effAtCosTheta1)
+        : fEffAtCosTheta0(effAtCosTheta0), fEffAtCosTheta1(effAtCosTheta1)
+{
+}
+
+bool LinearAngularResponse::ApplyDE(const TrueHit *th, const HitTube *ht) {
+    float cosTheta = 0;
+    float normPMT = 0;
+    float normPhoton = 0;
+    for(int i=0; i<3; i++){
+        float photonDir = th->GetStartPosition(i) - ht->GetPosition(i);
+        cosTheta += photonDir*ht->GetOrientation(i);
+        normPMT += ht->GetOrientation(i)*ht->GetOrientation(i);
+        normPhoton += photonDir*photonDir;
+    }
+    cosTheta /= std::sqrt(normPhoton)*std::sqrt(normPMT);
+    float eff = fEffAtCosTheta0 + cosTheta * (fEffAtCosTheta1 - fEffAtCosTheta0);
+    return fRand->Rndm() < eff;
+}
+
 ///////////////////////////////////////////////////////////////////
 const double ResponseBoxandLine20inchHQE::ksig_param[4] = {0.6314, 0.06260, 0.5711,23.96};
 const double ResponseBoxandLine20inchHQE::klambda_param[2] = {0.4113, 0.07827};
@@ -174,7 +205,6 @@ float ResponseBoxandLine20inchHQE::HitTimeSmearing(float Q)
   return fRand->Gaus(-0.2, sigma)-1./lambda*log(1-fRand->Rndm());
 }
 
-///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 Response3inchR14374::Response3inchR14374(int seed, const string &pmtname)
 {
