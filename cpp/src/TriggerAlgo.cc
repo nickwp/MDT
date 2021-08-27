@@ -4,6 +4,7 @@
 
 TriggerAlgo::TriggerAlgo() :
 fNDigitsWindow( 200. ),
+fNDigitsStepSize( 5. ),
 fNDigitsThreshold( 25 ),
 fTriggerTimeForFailure( 100. )
 {
@@ -14,7 +15,8 @@ fTriggerTimeForFailure( 100. )
     fPostTriggerWindow[TriggerType::eFailure] = 100000.;
 
     Configuration *Conf = Configuration::GetInstance();
-    Conf->GetValue<float>("NDigitsStepSize", fNDigitsWindow);
+    Conf->GetValue<float>("NDigitsWindow", fNDigitsWindow);
+    Conf->GetValue<float>("NDigitsStepSize", fNDigitsStepSize);
     Conf->GetValue<int>("NDigitsThreshold", fNDigitsThreshold );
     Conf->GetValue<float>("FailureTime", fTriggerTimeForFailure);
     Conf->GetValue<float>("NDigitsPreTriggerWindow", fPreTriggerWindow[TriggerType::eNDigits]);
@@ -50,7 +52,7 @@ void TriggerAlgo::NDigits(HitTubeCollection *hc, TriggerInfo* ti)
         float tFirstHit = times[0];
         float tLastHit = times[nTotalDigiHits-1];
 
-        const float stepSize = fNDigitsWindow; // in ns
+        const float stepSize = fNDigitsStepSize; // in ns
         const float tWindowMax = tLastHit - fNDigitsWindow; // in ns
 
         float tWindowUp = 0.;
