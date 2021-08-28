@@ -52,11 +52,11 @@ void TriggerAlgo::NDigits(HitTubeCollection *hc, TriggerInfo* ti)
         float tFirstHit = times[0];
         float tLastHit = times[nTotalDigiHits-1];
 
-        const float stepSize = fNDigitsStepSize; // in ns
-        const float tWindowMax = tLastHit - fNDigitsWindow; // in ns
+        const double stepSize = fNDigitsStepSize; // in ns
+        const double tWindowMax = tLastHit - fNDigitsWindow; // in ns
 
-        float tWindowUp = 0.;
-        float tWindowLow = 0.;
+        double tWindowUp = 0.;
+        double tWindowLow = 0.;
 
         //  - Slide the time window with a width of "fNDigitsWindow"
         //    from "tWindowLow" (assumed to be 0 initially) to "tWindowMax"
@@ -119,6 +119,16 @@ void TriggerAlgo::NDigits(HitTubeCollection *hc, TriggerInfo* ti)
             else
             {
                 tWindowLow += stepSize;
+                double nextHitTime = tWindowMax;
+                for(iHit=0; iHit<nTotalDigiHits; iHit++)
+                {
+                    float t = times[iHit];
+                    if( t>tWindowLow && t <= nextHitTime )
+                    {
+                        nextHitTime = t;
+                    }
+                }
+                tWindowLow += std::max(0.0, stepSize*int((nextHitTime-tWindowLow)/stepSize));
             }
             tWindowUp = tWindowLow + fNDigitsWindow;
         }
