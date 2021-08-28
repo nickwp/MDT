@@ -53,7 +53,7 @@ void TriggerAlgo::NDigits(HitTubeCollection *hc, TriggerInfo* ti)
         float tLastHit = times[nTotalDigiHits-1];
 
         const double stepSize = fNDigitsStepSize; // in ns
-        const double tWindowMax = tLastHit - fNDigitsWindow; // in ns
+        const double tWindowMax = std::max(0.f, tLastHit - fNDigitsWindow); // in ns
 
         double tWindowUp = 0.;
         double tWindowLow = 0.;
