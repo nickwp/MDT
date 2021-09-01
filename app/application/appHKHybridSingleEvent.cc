@@ -52,6 +52,7 @@ int main(int argc, char **argv)
     cout<<" Start processing " << nEntries <<" entries........ " <<endl;
     for(int iEntry=0; iEntry<nEntries; iEntry++)
     {
+      cout<<">>> Event: " << iEntry << endl;
         inData->GetEntry(iEntry);
 
         outData->AddTracks(inData->GetTrigger(0, 0), toffset, 0);
@@ -71,6 +72,7 @@ int main(int argc, char **argv)
     }
     outData->WriteTree();
     inData->CloseFile();
+    outData->CopyTree(fInFileName.c_str(), "wcsimGeoT");
 }
 
 
