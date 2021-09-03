@@ -71,6 +71,7 @@ void WCRootData::AddTrueHitsToMDT(HitTubeCollection *hc, PMTResponse *pr, float 
         int timeArrayIndex = aHit->GetTotalPe(0);
         int peForTube = aHit->GetTotalPe(1);   
         int tubeID = aHit->GetTubeID();
+        HitTube * ht = &(*hc)[tubeID];
         const int maxPE = timeArrayIndex + peForTube;
         for(int jPE=timeArrayIndex; jPE<maxPE; jPE++)
         {
@@ -87,9 +88,9 @@ void WCRootData::AddTrueHitsToMDT(HitTubeCollection *hc, PMTResponse *pr, float 
             th->SetStartTime(aHitTime->GetPhotonStartTime());
             for(int k=0; k<3; k++){ th->SetStartPosition(k, aHitTime->GetPhotonStartPos(k)); }
             for(int k=0; k<3; k++){ th->SetStartDirection(k, aHitTime->GetPhotonStartDir(k)); }
-            if( !pr->ApplyDE(th) ){ continue; }
+            if( !pr->ApplyDE(th, ht) ){ continue; }
 
-            (&(*hc)[tubeID])->AddRawPE(th);
+            ht->AddRawPE(th);
         }
     }
 }
