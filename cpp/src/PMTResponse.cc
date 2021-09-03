@@ -142,7 +142,7 @@ bool LinearAngularResponse::ApplyDE(const TrueHit *th, const HitTube *ht) {
     float normPMT = 0;
     float normPhoton = 0;
     for(int i=0; i<3; i++){
-        float photonDir = th->GetStartPosition(i) - ht->GetPosition(i);
+        float photonDir = th->GetStartPosition(i)/10. - ht->GetPosition(i);
         cosTheta += photonDir*ht->GetOrientation(i);
         normPMT += ht->GetOrientation(i)*ht->GetOrientation(i);
         normPhoton += photonDir*photonDir;
