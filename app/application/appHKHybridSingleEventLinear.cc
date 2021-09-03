@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 
     MDTManager *MDT = new MDTManager(fSeed);
     MDT->RegisterPMTType(fPMTType[0], new ResponseBoxandLine20inchHQELinear(fEffAtCosTheta0, fEffAtCosTheta1));
-    MDT->RegisterPMTType(fPMTType[1], new Response3inchR14374Flat(0.5));
+    MDT->RegisterPMTType(fPMTType[1], new Response3inchR14374Flat((fEffAtCosTheta0+fEffAtCosTheta1)*0.5));
 
     const vector<string> listWCRootEvt{"wcsimrootevent", "wcsimrootevent2"};
 
@@ -54,6 +54,7 @@ int main(int argc, char **argv)
     cout<<" Start processing " << nEntries <<" entries........ " <<endl;
     for(int iEntry=0; iEntry<nEntries; iEntry++)
     {
+        cout<<">>> Event: " << iEntry << endl;
         inData->GetEntry(iEntry);
 
         outData->AddTracks(inData->GetTrigger(0, 0), toffset, 0);
@@ -73,6 +74,7 @@ int main(int argc, char **argv)
     }
     outData->WriteTree();
     inData->CloseFile();
+    outData->CopyTree(fInFileName.c_str(), "wcsimGeoT");
 }
 
 
