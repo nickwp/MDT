@@ -127,7 +127,7 @@ FlatAngularResponse::FlatAngularResponse(float efficiency) : fEfficiency(efficie
 }
 
 bool FlatAngularResponse::ApplyDE(const TrueHit *th, const HitTube *ht) {
-    return fRand->Rndm() > fEfficiency;
+    return fRand->Rndm() < fEfficiency;
 }
 
 ///////////////////////////////////////////////////////////////////
